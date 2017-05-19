@@ -28,8 +28,8 @@ extension NSObject:IFXJsonProtocol{
         return selfObject
     }
     
-    func fxDictionary()->Dictionary<String,AnyObject>{
-        var dict = Dictionary<String,AnyObject>.init()
+    public func fxDictionary()->Dictionary<String,Any>{
+        var dict = Dictionary<String,Any>.init()
         let allPropertys = FXJsonUtiles.getPropertys(type(of: self))
         for object in allPropertys! {
             if object.nonJson {
@@ -96,6 +96,7 @@ public class FXJsonUtiles{
             o = self.toObjectValue(object, propertyDesc: nil)
         }
         if o != nil {
+            print(o!)
             do{
                 let jsonData = try JSONSerialization.data(withJSONObject: o!, options: JSONSerialization.WritingOptions.prettyPrinted)
                 return jsonData
@@ -304,11 +305,27 @@ public class FXJsonUtiles{
         }
     }
     
+    //获取属性名称
     public static func getPropertyTypeNameByPropertyName(_ proName:String,_ clazz:AnyClass)->String?{
         let property:objc_property_t = class_getProperty(clazz, proName.cString(using: String.Encoding.utf8));
-        return self .getPropertyTypeName(property: property);
+        return self.getPropertyTypeName(property: property);
+    }
+    
+    //获取工程的名字
+    public static func getBundleName() -> String{
+        var bundlePath = Bundle.main.bundlePath
+        bundlePath = bundlePath.components(separatedBy: "/").last!
+        bundlePath = bundlePath.components(separatedBy: ".").first!
+        return bundlePath
+    }
+    
+    //通过类名返回一个AnyClass
+    public static func getClassWithClassName(_ name:String) ->AnyClass?{
+        let type = self.getBundleName() + "." + name
+        return NSClassFromString(type)
     }
 
+    //获取所有属性
     public static func getPropertys(_ clazz: NSObject.Type)->Array<FXJsonObject>?{
         if clazz == NSObject.classForCoder() {
             return nil
@@ -386,6 +403,7 @@ public class FXJsonUtiles{
         return propertyArray;
     }
     
+    //获取属性名称
     public static func getPropertyTypeName(property:objc_property_t)->String?{
         let attributes = property_getAttributes(property);
         let attributeStr = NSString.init(bytes: attributes!, length: Int(strlen(attributes)), encoding: String.Encoding.utf8.rawValue);
@@ -396,7 +414,7 @@ public class FXJsonUtiles{
             let end = a1?.endIndex;
             typeName = a1?.substring(with: Range.init(uncheckedBounds: (lower:start!,upper:end!)));
         }else{
-            if (a1?.characters.count)! >= 2 {
+            if a1 != nil && (a1?.characters.count)! >= 2 {
                 typeName = a1?.substring(from: (a1?.index((a1?.startIndex)!, offsetBy: 1))!);
                 if numberTypeNames.contains(typeName!) {
                     typeName = "NSNumber";

@@ -24,14 +24,14 @@ public enum FXObjectType:Int{
 
 public class FXJsonObject:AnyObject{
     
-    var type:FXObjectType = FXObjectType.Object;
-    var name:String;//属性名称
-    var jsonName:String;//属性对应的json名称
-    var typeName:String?;//类型名
-    var nonJson:Bool=false;//是否为非序列化属性（Default NO）
-    var dateFormat:String?;//日期格式化字符串
-    var genericClass:NSObject.Type?;//泛型（NSArray，NSSet）
-    var genericClassDict:Dictionary<String,NSObject.Type>?;//词典泛型（NSDictionary）
+    public var type:FXObjectType = FXObjectType.Object;
+    public var name:String;//属性名称
+    public var jsonName:String;//属性对应的json名称
+    public var typeName:String?;//类型名
+    public var nonJson:Bool=false;//是否为非序列化属性（Default NO）
+    public var dateFormat:String?;//日期格式化字符串
+    public var genericClass:NSObject.Type?;//泛型（NSArray，NSSet）
+    public var genericClassDict:Dictionary<String,NSObject.Type>?;//词典泛型（NSDictionary）
     
     public init(TypeName typeName:String?,Name name:String,JsonName jsonName:String,NonJson nonJson:Bool){
         self.name=name;
